@@ -1,0 +1,8 @@
+node_modules
+.env
+firebase-key.json
+memory.db
+tmp_*.ts
+dist
+*.log
+.DS_Store
