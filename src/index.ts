@@ -92,7 +92,7 @@ async function handleAgentLoop(ctx: any, userMessage: string, isAudio: boolean =
       const historySnapshot = await db.collection('messages')
         .where('sessionId', '==', sessionId)
         .orderBy('timestamp', 'desc')
-        .limit(8)
+        .limit(4) // Reduzido de 8 para 4 para evitar erro 429 de tokens
         .get();
         
       const history = historySnapshot.docs.map(doc => doc.data()).reverse();
@@ -118,15 +118,10 @@ async function handleAgentLoop(ctx: any, userMessage: string, isAudio: boolean =
     messages.unshift({ 
       role: 'system', 
       content: `VOCÊ É O OPENGRAVITY. ESPECIALISTA EM MESA PROPRIETÁRIA. ${forumContextInfo}
-      
-      ESTADO ATUAL:
-      - Você tem acesso aos manuais da LUCID e APEX via 'search_knowledge_base'.
-      
-      ORDENS CRÍTICAS:
-      1. NUNCA diga que vai pesquisar. APENAS PESQUISE e responda o resultado.
-      2. NUNCA escreva JSON ou códigos tipo {"function":...} no chat.
-      3. Se a informação estiver nos manuais, use-os. Se não estiver, use a internet ou diga que não sabe.
-      4. Seja curto, grosso e técnico. Sem introduções tipo "Peço desculpas" ou "Aqui está".`
+      ORDENS:
+      1. NUNCA escreva JSON no chat.
+      2. Pesquise e responda direto. Sem enrolar.
+      3. Use 'search_knowledge_base' para dados técnicos.`
     });
 
     let finalContent = "";
