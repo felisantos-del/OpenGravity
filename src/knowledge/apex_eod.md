@@ -54,15 +54,20 @@ Esta é a regra mais importante para proteger o lucro a longo prazo:
 3.  **Bater o DLL reprova a conta?** NÃO. Bater o Limite de Perda Diária (DLL) apenas pausa o trading na sessão atual. A conta continua ativa para o próximo dia.
 4.  **Bater o Threshold (EOD) reprova a conta?** SIM. Tocar no drawdown EOD em qualquer momento resulta em falha imediata.
 5.  **Quando reseta o dia?** O dia de negociação reseta às **18:00 (6:00 PM) ET**.
-6.  **DLL afeta o Threshold?** Não, são regras separadas.
+6.  **DLL afeta o Threshold?** Não, são regras separadas. O DLL pausa o dia; o Threshold fecha a conta.
 7.  **A regra dos 30 dias vale para a PA?** Não, o limite de 30 dias é apenas para a fase de Avaliação.
-8.  **Quantas PAs posso ter?** Você pode ter até **20 contas PA** ativas simultaneamente (independente do tamanho ou tipo).
-9.  **A conta PA é uma conta real?** Não, é uma conta de **Simulação Financiada (Sim-Funded)**.
-10. **Bater o DLL na PA fecha a conta?** NÃO. Assim como na avaliação, bater o DLL apenas pausa as operações no dia e reseta na próxima sessão.
-11. **O tamanho da posição pode aumentar?** Sim, conforme você sobe nos **Scaling Levels** baseados no seu saldo de fechamento.
-12. **O Profit Split é de 100%?** Sim, você recebe 100% dos saques aprovados após cumprir os requisitos.
+8.  **Quantas PAs posso ter?** Até **20 contas PA** simultâneas (combinadas).
+9.  **A conta PA é real?** É uma conta de **Simulação Financiada (Sim-Funded)**.
+10. **Bater o DLL na PA fecha a conta?** NÃO. Apenas pausa o dia e reseta na próxima sessão.
+11. **O Threshold EOD se move?** Sim, mas **apenas para cima**. Ele sobe quando o saldo de fechamento (EOD) atinge uma nova máxima. Ele NUNCA desce em dias de perda.
+12. **Posso cair abaixo do Threshold e recuperar no mesmo dia?** NÃO. Se o saldo tocar no Threshold em qualquer momento da sessão, a liquidação é instantânea.
+13. **Qual a diferença entre Live Trailing e EOD?** O **Live Trailing** se move em tempo real enquanto você ganha dinheiro no dia. O **EOD** só se move uma vez, no fechamento do mercado, ficando fixo durante todo o dia seguinte (mas ainda sendo fatal se tocado).
 
 ---
+
+## Central de Resumo: DLL vs EOD
+*   **DLL (Limite Diário):** "Acabou seu dia de trading. Volte amanhã." (Conta continua viva).
+*   **EOD Threshold (Drawdown):** "Você perdeu a conta. Fim de jogo." (Avaliação falhou ou PA fechada).
 
 ## Proibições Cruciais (Avaliação e PA)
 *   **Hedge:** Proibido fazer hedge entre contas.
