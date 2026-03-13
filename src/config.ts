@@ -19,5 +19,10 @@ export const config = {
   groqKey: process.env.GROQ_API_KEY!,
   dbPath: process.env.DB_PATH || './memory.db',
   elevenLabsKey: process.env.ELEVENLABS_API_KEY,
-  model: "llama-3.3-70b-specdec"
+  model: "llama-3.3-70b-specdec",
+  // IDs dos tópicos do Telegram para cada mesa
+  topics: {
+    lucid: process.env.TOPIC_ID_LUCID ? parseInt(process.env.TOPIC_ID_LUCID) : null,
+    apex: process.env.TOPIC_ID_APEX ? parseInt(process.env.TOPIC_ID_APEX) : null,
+  }
 };

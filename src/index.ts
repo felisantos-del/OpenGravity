@@ -102,20 +102,26 @@ async function handleAgentLoop(ctx: any, userMessage: string, isAudio: boolean =
       messages.push({ role: 'user', content: userMessage }); // fallback
     }
 
-    const forumContextInfo = isForum ? ` O usuário está falando dentro de um sub-tópico Fórum (ID: ${ctx.message.message_thread_id}). Tente deduzir de qual mesa ele está falando ou pergunte se o nome não for óbvio.` : '';
+    let forumContextInfo = '';
+    if (isForum) {
+      const threadId = ctx.message.message_thread_id;
+      if (threadId === config.topics.lucid) {
+        forumContextInfo = `\n[FOCO: LUCID TRADING] Você está no tópico oficial da Lucid. FALE APENAS DA LUCID. Se perguntarem da Apex, diga que devem ir para o tópico dela.`;
+      } else if (threadId === config.topics.apex) {
+        forumContextInfo = `\n[FOCO: APEX TRADER FUNDING] Você está no tópico oficial da Apex. FALE APENAS DA APEX. Se perguntarem da Lucid, diga que devem ir para o tópico dela.`;
+      } else {
+        forumContextInfo = `\n[TOPIC_ID: ${threadId}] Tente identificar a mesa pelo assunto ou responda de forma geral.`;
+      }
+    }
 
     // Insere o prompt de sistema como primeira mensagem
     messages.unshift({ 
       role: 'system', 
-      content: `Você é o OpenGravity, um assistente AI PROFISSIONAL e ESPECIALISTA em Mesas Proprietárias (Prop Firms).
+      content: `Você é o OpenGravity, um assistente AI PROFISSIONAL e ESPECIALISTA em Mesas Proprietárias. ${forumContextInfo}
       
-      IMPORTANTE: A Lucid e a Apex são as parceiras principais.
-      Modelos Lucid: LucidPro, LucidFlex e LucidDirect.
-      Modelos Apex: Avaliação de 1 Passo, Contas PA.
-      PROCEDIMENTO OBRIGATÓRIO:
-      1. Se o usuário perguntar sobre "tipos de exames", "modelos", ou regras de "drawdown/saque" de QUALQUER uma das casas, use 'search_knowledge_base'.
-      2. Responda de forma direta e enumerada.
-      3. Seja técnico e profissional.`
+      REGRAS DE OURO:
+      1. NUNCA escreva o código JSON de uma ferramenta no chat (ex: {"function":...}). Use a ferramenta de forma invisível.
+      2. Seja direto e técnico. Use 'search_knowledge_base' sempre que precisar de dados.`
     });
 
     let finalContent = "";
