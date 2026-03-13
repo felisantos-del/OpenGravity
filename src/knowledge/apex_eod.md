@@ -12,19 +12,27 @@
 **Período de Acesso:** 30 dias.
 **Consistência e Escalonamento:** Não aplicados na fase de avaliação.
 
-## Regras de Aprovação
-*   **Sem Dias Mínimos:** Pode passar em apenas 1 dia de negociação se bater a meta.
-*   **Ativação:** Após passar, o trader tem **7 dias corridos** para ativar a conta Performance (PA).
-*   **Regras de Ouro:**
-    1. Atingir a meta de lucro.
-    2. NUNCA tocar no nível de Drawdown EOD (Threshold).
-    3. Respeitar o Limite de Perda Diária (DLL).
+## Conta Performance (PA) EOD - O que muda?
 
-## Funcionamento do EOD Threshold
-*   Calculado **uma vez por dia** no fechamento do mercado.
-*   Baseado no saldo de fechamento (EOD Balance).
-*   Se tocar no Threshold em qualquer momento da sessão, a conta é liquidada e reprovada.
+A conta PA é liberada após a aprovação no exame. Ela mantém o modelo EOD, mas possui limites de contratos **menores** e regras mais rígidas.
 
-## Proibições Cruciais
-*   **Hedge:** Proibido fazer hedge entre contas de avaliação.
+### Parâmetros da Conta Performance (PA) EOD
+
+| Tamanho | Max Drawdown (EOD) | Contratos Máx (PA) | Scaling Tiers | DLL Tier Based |
+| :--- | :--- | :--- | :--- | :--- |
+| **25K** | $1,000 | **2** | Sim | Sim |
+| **50K** | $2,000 | **4** | Sim | Sim |
+| **100K** | $3,000 | **6** | Sim | Sim |
+| **150K** | $4,000 | **10** | Sim | Sim |
+
+### Regras Exclusivas da Conta PA
+1.  **Scaling Tier Based (Escalonamento):** O número de contratos permitidos aumenta conforme o saldo da conta cresce. Você não começa com o limite máximo total da avaliação.
+2.  **DLL Tier Based:** O Limite de Perda Diária também é ajustado conforme o seu nível (Tier).
+3.  **Inactivity Rule (Inatividade):** Existe uma regra de inatividade. A conta deve ser operada regularmente para permanecer ativa.
+4.  **100% Payout Split:** O trader mantém 100% dos ganhos aprovados (dentro das regras de elegibilidade).
+
+---
+
+## Proibições Cruciais (Avaliação e PA)
+*   **Hedge:** Proibido fazer hedge entre contas.
 *   **Atividade Proibida:** Qualquer tentativa de burlar as regras resulta em fechamento imediato.
