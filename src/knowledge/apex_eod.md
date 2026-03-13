@@ -56,9 +56,15 @@ Esta é a regra mais importante para proteger o lucro a longo prazo:
 5.  **Quando reseta o dia?** O dia de negociação reseta às **18:00 (6:00 PM) ET**.
 6.  **DLL afeta o Threshold?** Não, são regras separadas.
 7.  **A regra dos 30 dias vale para a PA?** Não, o limite de 30 dias é apenas para a fase de Avaliação.
+8.  **Quantas PAs posso ter?** Você pode ter até **20 contas PA** ativas simultaneamente (independente do tamanho ou tipo).
+9.  **A conta PA é uma conta real?** Não, é uma conta de **Simulação Financiada (Sim-Funded)**.
+10. **Bater o DLL na PA fecha a conta?** NÃO. Assim como na avaliação, bater o DLL apenas pausa as operações no dia e reseta na próxima sessão.
+11. **O tamanho da posição pode aumentar?** Sim, conforme você sobe nos **Scaling Levels** baseados no seu saldo de fechamento.
+12. **O Profit Split é de 100%?** Sim, você recebe 100% dos saques aprovados após cumprir os requisitos.
 
 ---
 
 ## Proibições Cruciais (Avaliação e PA)
 *   **Hedge:** Proibido fazer hedge entre contas.
+*   **Liquidação Automática:** Se tocar no Threshold intraday, a liquidação é instantânea e a conta é perdida (PA fechada ou Avalição reprovada).
 *   **Atividade Proibida:** Qualquer tentativa de burlar as regras resulta em fechamento imediato.
