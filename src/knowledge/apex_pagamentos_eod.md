@@ -17,11 +17,17 @@ As contas EOD possuem um sistema de pagamento **revolucionário** (semanal) e re
 | **100K** | 5 dias | $300 | $103,100 | $103,600 |
 | **150K** | 5 dias | $350 | $154,100 | $154,600 |
 
-*   **Safety Net:** É o nível de Drawdown + $100. Você só saca o que estiver ACIMA disso.
-*   **Dias de Negociação:** Não precisam ser consecutivos. Apenas dias que bateram o "Lucro Mín/Dia".
+## Regras Detalhadas de Elegibilidade
+
+*   **Safety Net (Reserva de Segurança):** É calculado como seu limite de drawdown + $100. **IMPORTANTE:** O Safety Net permanece ativo por toda a vida da conta Performance Account (PA) e não desaparece após o primeiro saque.
+*   **Dias de Negociação Qualificados:** Apenas dias que bateram o "Lucro Mín/Dia" contam para os 5 dias necessários. Não precisam ser consecutivos e não há prazo para completá-los.
+*   **Pode continuar operando?** SIM. Você pode continuar operando imediatamente após solicitar um saque. Não é necessário pausar. 
+    *   **Atenção:** Opere como se o dinheiro já tivesse saído. Se o saldo cair abaixo do mínimo necessário após o pedido, o saque será negado automaticamente.
 
 ## Regra de Consistência (50%)
-Nenhum dia de lucro pode representar **50% ou mais** do lucro total acumulado desde o último saque. Se passar disso, você precisa operar mais para equilibrar a média antes de sacar.
+Nenhum dia de lucro pode representar **50% ou mais** do lucro total acumulado desde o último saque. 
+*   Se um dia for grande demais, a opção de saque não aparecerá. 
+*   Basta continuar operando para diluir a percentagem até que ela caia abaixo de 50%.
 
 ## Tabela de Saque Máximo (Por Sequência)
 
