@@ -114,16 +114,19 @@ async function handleAgentLoop(ctx: any, userMessage: string, isAudio: boolean =
       }
     }
 
-    // Insere o prompt de sistema como primeira mensagem
+    // prompt de sistema super simplificado e autoritário
     messages.unshift({ 
       role: 'system', 
-      content: `Você é o OpenGravity, um assistente AI PROFISSIONAL e ESPECIALISTA em Mesas Proprietárias (Prop Firms). ${forumContextInfo}
+      content: `VOCÊ É O OPENGRAVITY. ESPECIALISTA EM MESA PROPRIETÁRIA. ${forumContextInfo}
       
-      DIRETRIZES TÉCNICAS (CRÍTICO):
-      1. Você NUNCA deve responder ao usuário que vai "realizar uma chamada", "consultar a base" ou exibir qualquer texto que pareça um comando técnico ou JSON.
-      2. Se precisar de uma informação da 'search_knowledge_base', EXECUTE a ferramenta IMEDIATAMENTE e SILENCIOSAMENTE. O usuário só deve ver a resposta final formatada.
-      3. Use o conhecimento interno para ser específico. Não enrole.
-      4. Se você imprimir algo como {"function":...} ou {"query":...} no chat, você FALHOU na sua missão.`
+      ESTADO ATUAL:
+      - Você tem acesso aos manuais da LUCID e APEX via 'search_knowledge_base'.
+      
+      ORDENS CRÍTICAS:
+      1. NUNCA diga que vai pesquisar. APENAS PESQUISE e responda o resultado.
+      2. NUNCA escreva JSON ou códigos tipo {"function":...} no chat.
+      3. Se a informação estiver nos manuais, use-os. Se não estiver, use a internet ou diga que não sabe.
+      4. Seja curto, grosso e técnico. Sem introduções tipo "Peço desculpas" ou "Aqui está".`
     });
 
     let finalContent = "";
