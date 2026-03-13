@@ -47,6 +47,16 @@ Esta é a regra mais importante para proteger o lucro a longo prazo:
     *   *Ex: Numa conta de 50k, o drawdown trava em $53,000 quando o saldo fechar acima de $55,000.*
 3.  **Avaliações (Tradovate):** O drawdown **segue o lucro indefinidamente** (trails indefinitely). Não existe ponto de parada.
 
+## Perguntas Frequentes (FAQ) - Apex EOD
+
+1.  **Posso passar em um dia?** Sim, assim que bater a meta de lucro, sem limite mínimo de dias.
+2.  **Existe limite de tempo?** Sim, você tem **30 dias corridos** desde a compra para bater a meta.
+3.  **Bater o DLL reprova a conta?** NÃO. Bater o Limite de Perda Diária (DLL) apenas pausa o trading na sessão atual. A conta continua ativa para o próximo dia.
+4.  **Bater o Threshold (EOD) reprova a conta?** SIM. Tocar no drawdown EOD em qualquer momento resulta em falha imediata.
+5.  **Quando reseta o dia?** O dia de negociação reseta às **18:00 (6:00 PM) ET**.
+6.  **DLL afeta o Threshold?** Não, são regras separadas.
+7.  **A regra dos 30 dias vale para a PA?** Não, o limite de 30 dias é apenas para a fase de Avaliação.
+
 ---
 
 ## Proibições Cruciais (Avaliação e PA)
