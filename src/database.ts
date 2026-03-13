@@ -6,11 +6,21 @@ let credential;
 
 if (process.env.FIREBASE_SERVICE_ACCOUNT) {
     try {
-        const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+        // Sanitiza a string antes de fazer o parse: resolve problemas comuns de escape em variáveis de ambiente
+        let rawData = process.env.FIREBASE_SERVICE_ACCOUNT.trim();
+        
+        // Se a string começar com aspas extras (comum em alguns consoles), remove-as
+        if (rawData.startsWith('"') && rawData.endsWith('"')) {
+            rawData = rawData.slice(1, -1);
+        }
+
+        const serviceAccount = JSON.parse(rawData);
         credential = admin.credential.cert(serviceAccount);
-        console.log("[Firebase] Usando credenciais da variável de ambiente.");
+        console.log("[Firebase] Usando credenciais da variável de ambiente (Sanitizada).");
     } catch (err) {
-        console.error("[Firebase] Erro ao fazer parse da FIREBASE_SERVICE_ACCOUNT:", err);
+        console.error("[Firebase] Erro ao fazer parse da FIREBASE_SERVICE_ACCOUNT:");
+        console.error(err);
+        console.log("[Firebase] Conteúdo recebido (primeiros 50 char):", process.env.FIREBASE_SERVICE_ACCOUNT.substring(0, 50));
     }
 }
 
