@@ -2,36 +2,44 @@ import admin from 'firebase-admin';
 import path from 'path';
 
 // Inicializa o app Firebase Admin
-let credential;
+let credential: any;
 
-if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+// Tenta primeiro as variáveis individuais (mais robusto no Render/Cloud)
+if (process.env.FIREBASE_PROJECT_ID && process.env.FIREBASE_PRIVATE_KEY && process.env.FIREBASE_CLIENT_EMAIL) {
     try {
-        // Sanitiza a string antes de fazer o parse: resolve problemas comuns de escape em variáveis de ambiente
+        credential = admin.credential.cert({
+            projectId: process.env.FIREBASE_PROJECT_ID,
+            privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+            clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+        });
+        console.log("[Firebase] Usando credenciais via variáveis individuais (PROXIED).");
+    } catch (err) {
+        console.error("[Firebase] Erro ao carregar variáveis individuais:", err);
+    }
+} 
+// Fallback para o JSON completo se as individuais não existirem
+else if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+    try {
         let rawData = process.env.FIREBASE_SERVICE_ACCOUNT.trim();
-        
-        // Se a string começar com aspas extras (comum em alguns consoles), remove-as
         if (rawData.startsWith('"') && rawData.endsWith('"')) {
             rawData = rawData.slice(1, -1);
         }
-
         const serviceAccount = JSON.parse(rawData);
         credential = admin.credential.cert(serviceAccount);
-        console.log("[Firebase] Usando credenciais da variável de ambiente (Sanitizada).");
+        console.log("[Firebase] Usando credenciais da variável JSON.");
     } catch (err) {
-        console.error("[Firebase] Erro ao fazer parse da FIREBASE_SERVICE_ACCOUNT:");
-        console.error(err);
-        console.log("[Firebase] Conteúdo recebido (primeiros 50 char):", process.env.FIREBASE_SERVICE_ACCOUNT.substring(0, 50));
+        console.error("[Firebase] Erro ao processar JSON do Firebase:", err);
     }
 }
 
 if (!credential) {
-    const serviceAccountPath = path.join(process.cwd(), 'firebase-key.json');
     try {
+        const serviceAccountPath = path.join(process.cwd(), 'firebase-key.json');
         credential = admin.credential.cert(serviceAccountPath);
-        console.log("[Firebase] Usando credenciais do arquivo local firebase-key.json");
+        console.log("[Firebase] Usando arquivo local firebase-key.json");
     } catch (err) {
-        console.warn("[Firebase] Alerta: FIREBASE_SERVICE_ACCOUNT não definida e arquivo firebase-key.json não encontrado.");
-        console.warn("[Firebase] O bot pode falhar ao tentar acessar o Firestore.");
+        console.error("❌ [Firebase] ERRO CRÍTICO: Nenhuma credencial encontrada (env ou arquivo).");
+        process.exit(1); // Fecha o processo com erro claro
     }
 }
 
@@ -39,9 +47,10 @@ try {
     admin.initializeApp({
         credential: credential,
     });
-    console.log("[Firebase] Conectado com sucesso ao Firestore!");
+    console.log("[Firebase] ✅ Inicializado com sucesso!");
 } catch (e) {
-    console.error("[Firebase] Erro ao inicializar:", e);
+    console.error("[Firebase] ❌ Erro na função initializeApp:", e);
+    process.exit(1);
 }
 
 const db = admin.firestore();
