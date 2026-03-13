@@ -16,8 +16,13 @@ if (process.env.FIREBASE_SERVICE_ACCOUNT) {
 
 if (!credential) {
     const serviceAccountPath = path.join(process.cwd(), 'firebase-key.json');
-    credential = admin.credential.cert(serviceAccountPath);
-    console.log("[Firebase] Usando credenciais do arquivo local firebase-key.json");
+    try {
+        credential = admin.credential.cert(serviceAccountPath);
+        console.log("[Firebase] Usando credenciais do arquivo local firebase-key.json");
+    } catch (err) {
+        console.warn("[Firebase] Alerta: FIREBASE_SERVICE_ACCOUNT não definida e arquivo firebase-key.json não encontrado.");
+        console.warn("[Firebase] O bot pode falhar ao tentar acessar o Firestore.");
+    }
 }
 
 try {

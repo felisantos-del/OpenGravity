@@ -7,8 +7,18 @@ import fetch from 'node-fetch';
 import FormData from 'form-data';
 import http from 'http';
 
-const bot = new Bot(config.telegramToken);
-const groq = new Groq({ apiKey: config.groqKey });
+let bot: Bot;
+let groq: Groq;
+
+try {
+  console.log("[Bot] Carregando configurações...");
+  bot = new Bot(config.telegramToken);
+  groq = new Groq({ apiKey: config.groqKey });
+} catch (e: any) {
+  console.error("❌ ERRO CRÍTICO NA INICIALIZAÇÃO:");
+  console.error(e.message || e);
+  process.exit(1);
+}
 
 // Servidor HTTP simples para Health Check (Necessário para Railway/Render)
 const PORT = process.env.PORT || 8080;
