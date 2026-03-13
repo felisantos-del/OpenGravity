@@ -1,5 +1,5 @@
-# Use Node.js 20 base image
-FROM node:20-slim
+# Use Node.js 20 base image (full version for stability)
+FROM node:20
 
 # Create and change to the app directory
 WORKDIR /usr/src/app

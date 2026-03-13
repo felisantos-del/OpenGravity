@@ -6,4 +6,8 @@ npm-debug.log
 firebase-key.json
 memory.db
 tmp_*.ts
-c:\Users\Felipe\.gemini
+.gemini
+brain
+*.png
+*.webp
+*.jpg
