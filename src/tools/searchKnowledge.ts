@@ -42,8 +42,8 @@ export function searchKnowledge(query: string) {
             return `Não encontrei informações específicas sobre "${query}" nos manuais internos. Tente pesquisar por termos mais simples como 'drawdown', 'saque' ou 'regras'.`;
         }
 
-        // Retorna no máximo as 4 melhores seções para poupar token
-        return allResults.slice(0, 4).join('\n\n--- NEXT SECTION ---\n\n');
+        // Retorna no máximo as 2 melhores seções para poupar token (muito importante para evitar erro 429)
+        return allResults.slice(0, 2).join('\n\n--- NEXT SECTION ---\n\n');
 
     } catch (error: any) {
         return `Erro ao acessar o conhecimento: ${error.message}`;

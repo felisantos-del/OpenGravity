@@ -136,7 +136,7 @@ async function handleAgentLoop(ctx: any, userMessage: string, isAudio: boolean =
       try {
         const completion = await groq.chat.completions.create({
           messages,
-          model: "llama-3.3-70b-versatile",
+          model: config.model,
           tools: availableTools,
           tool_choice: "auto",
         });
