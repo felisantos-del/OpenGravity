@@ -265,8 +265,12 @@ async function handleAgentLoop(ctx: any, userMessage: string, isAudio: boolean =
 }
 
 bot.on("message:text", async (ctx) => {
-  console.log(`[Bot] Mensagem recebida de ${ctx.from.id}: ${ctx.message.text}`);
-  await handleAgentLoop(ctx, ctx.message.text, false);
+  try {
+    console.log(`[Bot] Mensagem recebida de ${ctx.from.id}: ${ctx.message.text}`);
+    await handleAgentLoop(ctx, ctx.message.text, false);
+  } catch (err) {
+    console.error("Erro global no handler de texto:", err);
+  }
 });
 
 // Handler para Áudios (Voz)
@@ -308,10 +312,8 @@ bot.on("message:voice", async (ctx) => {
     
     // Repassa o texto traduzido pro cérebro
     await handleAgentLoop(ctx, transcriptText, true);
-    
-  } catch (error: any) {
-    console.error("Erro no Áudio:", error);
-    await ctx.reply("❌ Não consegui ouvir ou transcrever seu áudio. O Whisper falhou.");
+  } catch (err) {
+    console.error("Erro global no handler de voz:", err);
   }
 });
 
