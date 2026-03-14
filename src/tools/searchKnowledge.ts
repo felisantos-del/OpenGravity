@@ -42,11 +42,11 @@ export function searchKnowledge(query: string) {
             return `Não encontrei informações específicas sobre "${query}" nos manuais internos. Tente pesquisar por termos mais simples como 'drawdown', 'saque' ou 'regras'.`;
         }
 
-        // Retorna no máximo as 2 melhores seções para poupar token (muito importante para evitar erro 429)
-        // Cada seção é limitada a 2500 caracteres para segurança extra.
-        return allResults.slice(0, 2)
-            .map(res => res.length > 2500 ? res.substring(0, 2500) + "..." : res)
-            .join('\n\n--- NEXT SECTION ---\n\n');
+        // Retorna no máximo as 2 melhores seções para poupar token.
+        // Cada seção é limitada a 3500 caracteres para segurança.
+        return allResults.slice(0, 3)
+            .map(res => res.length > 3500 ? res.substring(0, 3500) + "... [Continua no manual]" : res)
+            .join('\n\n--- SEÇÃO SEGUINTE ---\n\n');
 
     } catch (error: any) {
         return `Erro ao acessar o conhecimento: ${error.message}`;
