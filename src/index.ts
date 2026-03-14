@@ -14,6 +14,12 @@ try {
   console.log("[Bot] Carregando configurações...");
   bot = new Bot(config.telegramToken);
   groq = new Groq({ apiKey: config.groqKey });
+
+  // Limpa webhook ao iniciar para garantir que o polling funcione (evita conflito local/nuvem)
+  bot.api.deleteWebhook({ drop_pending_updates: true }).then(() => {
+    console.log("[Bot] Webhook deletado/limpo com sucesso.");
+  }).catch(e => console.error("[Bot] Erro ao deletar webhook:", e));
+
 } catch (e: any) {
   console.error("❌ ERRO CRÍTICO NA INICIALIZAÇÃO:");
   console.error(e.message || e);
@@ -54,11 +60,10 @@ bot.use(async (ctx, next) => {
 
   // 3. Acesso negado
   const userName = ctx.from?.first_name || 'Usuário desconhecido';
-  console.log(`[Whitelist] Acesso NEGADO para: ${userName} (ID: ${userId})`);
+  const chatInfo = ctx.chat?.id ? `no chat ${ctx.chat.id}` : 'em private';
+  console.log(`[Whitelist] Acesso NEGADO para: ${userName} (ID: ${userId}) ${chatInfo}`);
   await ctx.reply(`Acesso negado. Seu ID: ${userId}. Se você for administrador, tente enviar uma mensagem no grupo.`);
 });
-
-bot.command("start", (ctx) => ctx.reply("🚀 OpenGravity Online! Agora o cérebro está conectado. Mande um oi!"));
 
 bot.command("start", (ctx) => ctx.reply("🚀 OpenGravity Online! Agora o cérebro está conectado. Mande um oi!"));
 
@@ -118,10 +123,11 @@ async function handleAgentLoop(ctx: any, userMessage: string, isAudio: boolean =
     messages.unshift({ 
       role: 'system', 
       content: `VOCÊ É O OPENGRAVITY. ESPECIALISTA EM MESA PROPRIETÁRIA. ${forumContextInfo}
-      ORDENS:
-      1. NUNCA escreva JSON no chat.
-      2. Pesquise e responda direto. Sem enrolar.
-      3. Use 'search_knowledge_base' para dados técnicos.`
+      ORDENS TÉCNICAS:
+      1. PRIORIDADE TOTAL: Se a informação estiver nos manuais internos (ferramenta 'search_knowledge_base'), USE-OS.
+      2. WEB SEARCH: Use 'fetch_website' APENAS se o assunto NÃO existir nos manuais internos ou FAQ.
+      3. NUNCA escreva JSON no chat.
+      4. Responda de forma direta e profissional.`
     });
 
     let finalContent = "";
@@ -239,11 +245,27 @@ async function handleAgentLoop(ctx: any, userMessage: string, isAudio: boolean =
     console.error("--- ERRO NA IA ---");
     console.error(error.message || error);
     console.error("------------------");
-    await ctx.reply("❌ Erro na IA. Dá uma olhada no terminal do VS Code para ver o motivo real.");
+
+    // Salva o erro no Firebase para diagnóstico posterior
+    try {
+      await db.collection('errors').add({
+        userId: userId,
+        sessionId: sessionId,
+        errorMessage: error.message || "Erro desconhecido",
+        errorStack: error.stack || null,
+        userMessage: userMessage,
+        timestamp: Date.now()
+      });
+    } catch (dbErr) {
+      console.error("Erro ao gravar log de erro no Firebase:", dbErr);
+    }
+
+    await ctx.reply("❌ Erro na IA. Dá uma olhada no terminal do VS Code ou no console do Firebase para ver o motivo real.");
   }
 }
 
 bot.on("message:text", async (ctx) => {
+  console.log(`[Bot] Mensagem recebida de ${ctx.from.id}: ${ctx.message.text}`);
   await handleAgentLoop(ctx, ctx.message.text, false);
 });
 

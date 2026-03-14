@@ -7,8 +7,23 @@ WORKDIR /usr/src/app
 # Copy application dependency manifests to the container image.
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+# Install dependencies and Puppeteer required libs
+RUN apt-get update && apt-get install -y \
+    libgbm-dev \
+    libnss3 \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libcups2 \
+    libdrm2 \
+    libxkbcommon0 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxrandr2 \
+    libgbm1 \
+    libasound2 \
+    libpango-1.0-0 \
+    libpangocairo-1.0-0 \
+    && npm install
 
 # Copy local code to the container image.
 COPY . .

@@ -43,7 +43,10 @@ export function searchKnowledge(query: string) {
         }
 
         // Retorna no máximo as 2 melhores seções para poupar token (muito importante para evitar erro 429)
-        return allResults.slice(0, 2).join('\n\n--- NEXT SECTION ---\n\n');
+        // Cada seção é limitada a 2500 caracteres para segurança extra.
+        return allResults.slice(0, 2)
+            .map(res => res.length > 2500 ? res.substring(0, 2500) + "..." : res)
+            .join('\n\n--- NEXT SECTION ---\n\n');
 
     } catch (error: any) {
         return `Erro ao acessar o conhecimento: ${error.message}`;

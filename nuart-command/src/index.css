@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  @apply bg-[#f0f4f8] text-[#1e293b] antialiased min-h-screen;
+}
+
+.glass-card {
+  @apply bg-white/80 backdrop-blur-xl border border-white shadow-soft transition-all duration-300;
+}
+
+.glass-card:hover {
+  @apply bg-white shadow-hover -translate-y-1;
+}
+
+@layer utilities {
+  .shadow-soft {
+    box-shadow: 0 10px 40px -10px rgba(0,0,0,0.08);
+  }
+  .shadow-hover {
+    box-shadow: 0 20px 40px -5px rgba(0,0,0,0.12);
+  }
+}

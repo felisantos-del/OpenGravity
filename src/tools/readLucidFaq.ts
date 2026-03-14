@@ -40,8 +40,8 @@ export function readLucidFaq(query?: string) {
         // Ordenar por relevância
         scoredArticles.sort((a, b) => b.score - a.score);
 
-        // Pegar apenas os 3 mais relevantes
-        const topArticles = scoredArticles.slice(0, 3).map(a => a.article);
+        // Pegar apenas os 2 mais relevantes (reduzido de 3 para poupar tokens)
+        const topArticles = scoredArticles.slice(0, 2).map(a => a.article);
 
         if (topArticles.length === 0) {
             return `Nenhum artigo encontrado no FAQ para a busca: "${query}". Tente simplificar as palavras-chave.`;
@@ -49,9 +49,9 @@ export function readLucidFaq(query?: string) {
 
         let result = `Resultados da busca por "${query}" no FAQ da Lucid:\n\n` + topArticles.join('\n\n---\n\n');
         
-        // Limita o tamanho máximo de caracteres da resposta para não estourar os tokens (max ~15000 chars)
-        if (result.length > 15000) {
-            result = result.substring(0, 15000) + '... [Cortado por limite de tokens]';
+        // Limita o tamanho máximo de caracteres da resposta para não estourar os tokens (max ~5000 chars)
+        if (result.length > 5000) {
+            result = result.substring(0, 5000) + '... [Cortado por limite de tokens]';
         }
         
         console.log(`[Tools] readLucidFaq encontrou ${topArticles.length} artigos para "${query}". Retornando ${result.length} caracteres.`);

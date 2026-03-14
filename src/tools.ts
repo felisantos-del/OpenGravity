@@ -5,8 +5,14 @@ import { searchKnowledge, searchKnowledgeDefinition } from './tools/searchKnowle
 
 export const availableTools = [
   getTimeDefinition,
-  fetchWebsiteDefinition,
   readLucidFaqDefinition,
+  {
+    ...fetchWebsiteDefinition,
+    function: {
+      ...fetchWebsiteDefinition.function,
+      description: "Acessa uma URL externa. USE APENAS SE A INFORMAÇÃO NÃO ESTIVER NO CONHECIMENTO INTERNO."
+    }
+  },
   searchKnowledgeDefinition
 ];
 
