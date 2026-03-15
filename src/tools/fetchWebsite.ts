@@ -13,7 +13,12 @@ export async function fetchWebsite(url: string) {
         // Lança o Puppeteer no modo headless
         browser = await puppeteer.launch({ 
             headless: true,
-            args: ['--no-sandbox', '--disable-setuid-sandbox']
+            args: [
+                '--no-sandbox', 
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage', // Helps in resource-constrained environments like cloud
+                '--disable-gpu'
+            ]
         });
         
         const page = await browser.newPage();
@@ -22,7 +27,8 @@ export async function fetchWebsite(url: string) {
         await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
         
         // Vai até a URL e espera que a rede fique ociosa (ajuda com sites React/Vue e Cloudflare)
-        await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
+        // Reduzido para 20s para falhar mais rápido se o site estiver lento
+        await page.goto(url, { waitUntil: 'networkidle2', timeout: 20000 });
         
         // Pega todo o HTML já renderizado (pós-JavaScript/Cloudflare)
         const html = await page.content();
@@ -43,7 +49,17 @@ export async function fetchWebsite(url: string) {
         
         return `Conteúdo do site ${url}:\n\n${text}`;
     } catch (error: any) {
+        console.error(`[Tools] Erro ao raspar ${url}:`, error.message);
         return `Erro de conexão ou falha ao raspar a URL ${url}: ${error.message}`;
+    } finally {
+        if (browser) {
+            try {
+                await browser.close();
+                console.log(`[Tools] Puppeteer fechado com sucesso.`);
+            } catch (closeError) {
+                console.error(`[Tools] Erro ao fechar Puppeteer:`, closeError);
+            }
+        }
     }
 }
 

@@ -11,14 +11,23 @@ let bot: Bot;
 let groq: Groq;
 
 try {
-  console.log("[Bot] Carregando configurações...");
+  console.log("-----------------------------------------");
+  console.log("[Bot] Iniciando OpenGravity...");
+  console.log("[Bot] Verificando variáveis de ambiente...");
+  
+  const envVars = {
+    TELEGRAM: !!config.telegramToken,
+    GROQ: !!config.groqKey,
+    FIREBASE: !!process.env.FIREBASE_PROJECT_ID || !!process.env.FIREBASE_SERVICE_ACCOUNT || !!process.env.FIREBASE_PRIVATE_KEY
+  };
+  console.log(`[Bot] Configuração carregada:`, envVars);
+
   bot = new Bot(config.telegramToken);
   groq = new Groq({ apiKey: config.groqKey });
 
-  // Limpa webhook ao iniciar para garantir que o polling funcione (evita conflito local/nuvem)
-  bot.api.deleteWebhook({ drop_pending_updates: true }).then(() => {
-    console.log("[Bot] Webhook deletado/limpo com sucesso.");
-  }).catch(e => console.error("[Bot] Erro ao deletar webhook:", e));
+  bot.api.deleteWebhook({ drop_pending_updates: false }).then(() => {
+    console.log("[Bot] Webhook limpo. Entrando em modo Long Polling.");
+  }).catch(e => console.error("[Bot] Erro ao limpar webhook:", e));
 
 } catch (e: any) {
   console.error("❌ ERRO CRÍTICO NA INICIALIZAÇÃO:");
@@ -29,10 +38,15 @@ try {
 // Servidor HTTP simples para Health Check (Necessário para Railway/Render)
 const PORT = process.env.PORT || 8080;
 http.createServer((req, res) => {
-  res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.end('OpenGravity Bot is running!');
+  if (req.url === '/health') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ status: 'ok', time: new Date().toISOString() }));
+  } else {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end('OpenGravity Bot is running!');
+  }
 }).listen(PORT, () => {
-  console.log(`[HealthCheck] Servidor rodando na porta ${PORT}`);
+  console.log(`[HealthCheck] Servidor ouvindo na porta ${PORT}`);
 });
 
 // Whitelist de segurança e verificação de Admin
@@ -151,13 +165,23 @@ async function handleAgentLoop(ctx: any, userMessage: string, isAudio: boolean =
           for (const toolCall of responseMessage.tool_calls) {
             if (toolCall.type !== 'function') continue;
             
-            console.log(`[Agent] Executando tool: ${toolCall.function.name}`);
-            const toolResult = await executeToolCall(toolCall);
+            const toolName = toolCall.function.name;
+            console.log(`[Agent] Executando tool: ${toolName}`);
+            const startTime = Date.now();
+            
+            // Timeout de 45 segundos para a execução da tool
+            const toolResult = await Promise.race([
+              executeToolCall(toolCall),
+              new Promise((_, reject) => setTimeout(() => reject(new Error(`Timeout na execução da tool ${toolName}`)), 45000))
+            ]);
+            
+            const duration = ((Date.now() - startTime) / 1000).toFixed(1);
+            console.log(`[Agent] Tool ${toolName} finalizada em ${duration}s`);
             
             messages.push({
               role: 'tool',
               tool_call_id: toolCall.id,
-              name: toolCall.function.name,
+              name: toolName,
               content: typeof toolResult === 'string' ? toolResult : JSON.stringify(toolResult)
             });
           }
