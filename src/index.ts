@@ -159,6 +159,37 @@ async function handleAgentLoop(ctx: any, userMessage: string, isAudio: boolean =
         const responseMessage = completion.choices[0]?.message;
         if (!responseMessage) break;
 
+        // --- FAILSAFE: Se a IA escreveu o JSON de ferramenta no conteúdo de texto por erro ---
+        if (responseMessage.content && (responseMessage.content.trim().startsWith('{') || responseMessage.content.includes('"type": "function"'))) {
+           try {
+             const maybeJson = responseMessage.content.trim();
+             // Tenta extrair o JSON se houver texto em volta
+             const jsonMatch = maybeJson.match(/\{[\s\S]*\}/);
+             if (jsonMatch) {
+               const parsed = JSON.parse(jsonMatch[0]);
+               if (parsed.name || (parsed.function && parsed.function.name)) {
+                 console.warn("[Agent] Detectado JSON de tool no 'content'. Convertendo para tool_call nativo.");
+                 const functionName = parsed.name || parsed.function.name;
+                 const functionArgs = parsed.parameters ? JSON.stringify(parsed.parameters) : (parsed.function?.arguments || "{}");
+                 
+                 responseMessage.tool_calls = [{
+                   id: 'call_' + Math.random().toString(36).substring(7),
+                   type: 'function',
+                   function: {
+                     name: functionName,
+                     arguments: functionArgs
+                   }
+                 }];
+                 // Limpa o conteúdo para não enviar o JSON ao usuário
+                 responseMessage.content = null;
+               }
+             }
+           } catch (e) {
+             console.error("[Agent] Falha ao tentar recuperar JSON mal formado no content:", e);
+           }
+        }
+        // ---------------------------------------------------------------------------------
+
         messages.push(responseMessage);
 
         if (responseMessage.tool_calls && responseMessage.tool_calls.length > 0) {
